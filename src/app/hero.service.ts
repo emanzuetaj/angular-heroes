@@ -5,6 +5,9 @@ import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
 @Injectable({
   providedIn: 'root'
 })
@@ -29,6 +32,13 @@ export class HeroService {
       );
   }
 
+  updateHero(hero: Hero): Observable<any> {
+    return this.http.put(this.heroesUrl, hero, httpOptions)
+      .pipe(
+        tap(() => this.log(`updated hero id=${hero.id}`)),
+        catchError(this.handleError<any>('updatedHero'))
+      );
+  }
   private log(message: string): void {
     this.messageService.add(`HeroService: ${message}`);
   }
